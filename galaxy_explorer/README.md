@@ -43,33 +43,27 @@ JupyterLab, numpy, matplotlib, and hundreds of other tools.
 Type these commands one at a time, pressing **Enter** after each:
 
 ```bash
-pip install synthesizer-astro
+pip install cosmos-synthesizer
 pip install astropy
 pip install h5py
 pip install requests
 ```
 
-`synthesizer-astro` is the software Sophie uses every day to model galaxies.
+`cosmos-synthesizer` is the software Sophie uses every day to model galaxies.
 The others are standard astronomy tools.
 
-If `pip install synthesizer-astro` fails or takes more than a minute,
+If `pip install cosmos-synthesizer` fails or takes more than a minute,
 try this instead:
 
 ```bash
 conda install -c conda-forge astropy h5py requests
-pip install synthesizer-astro
+pip install cosmos-synthesizer
 ```
 
 ### Step 4: Get a Free TNG API Key
 
-The galaxy data comes from the IllustrisTNG project. You need a
-free account to download it.
-
-1. Go to **https://www.tng-project.org/users/register/**
-2. Fill in a username, email, and password — then confirm your email
-3. Log in and go to your profile: **https://www.tng-project.org/users/profile/**
-4. Copy your **API key** (a long string of letters and numbers)
-5. You will paste this into Notebook 4 when prompted
+The galaxy data comes from the IllustrisTNG project. You need Sophie's API key
+to use it, which you will paste this into Notebook 4 when prompted.
 
 ### Step 5: Copy the Grid File
 

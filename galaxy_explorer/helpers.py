@@ -39,62 +39,34 @@ TNG_SNAP_Z = 0.0  # snapshot 99 is redshift zero (today!)
 # ================================================================== #
 
 def download_tng_galaxy(subhalo_id, api_key, outdir="./galaxy_data"):
-    """
-    Download the star-particle data for one galaxy from IllustrisTNG.
-
-    Parameters
-    ----------
-    subhalo_id : int
-        The galaxy's ID number inside the simulation.
-    api_key : str
-        Your personal TNG API key (get one free at tng-project.org).
-    outdir : str
-        Folder where the data will be saved.
-
-    Returns
-    -------
-    str
-        Path to the downloaded HDF5 file.
-    """
     os.makedirs(outdir, exist_ok=True)
     outfile = os.path.join(outdir, f"galaxy_{subhalo_id}.hdf5")
 
     if os.path.exists(outfile):
-        print(f"Galaxy {subhalo_id} is already downloaded — ready to go!")
+        print(f"Galaxy {subhalo_id} already downloaded.")
         return outfile
 
-    url = (
-        f"https://www.tng-project.org/api/TNG50-1/snapshots/99/"
-        f"subhalos/{subhalo_id}/cutout.hdf5"
-    )
+    url = f"https://www.tng-project.org/api/TNG50-1/snapshots/99/subhalos/{subhalo_id}/cutout.hdf5"
+
     params = {
-        "stars": (
-            "Coordinates,"
-            "GFM_InitialMass,"
-            "GFM_StellarFormationTime,"
-            "GFM_Metallicity"
-        )
+        "stars": "Coordinates,GFM_InitialMass,GFM_StellarFormationTime,GFM_Metallicity"
     }
 
-    print(f"Downloading particle data for galaxy {subhalo_id} ...")
-    r = requests.get(url, headers={"api-key": api_key}, params=params)
+    print(f"Downloading galaxy {subhalo_id}...")
+    r = requests.get(url, headers={"API-Key": api_key}, params=params)
 
     if r.status_code == 401:
-        raise RuntimeError(
-            "Download failed — your API key looks wrong.\n"
-            "Double-check it at https://www.tng-project.org/users/profile/"
-        )
+        raise RuntimeError("Invalid API key.")
     if r.status_code != 200:
-        raise RuntimeError(
-            f"Download failed with status code {r.status_code}.\n"
-            "Check that the subhalo ID exists in TNG50-1 snapshot 99."
-        )
+        raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
+
+    if "hdf5" not in r.headers.get("Content-Type", ""):
+        raise RuntimeError("Did not receive HDF5 file.")
 
     with open(outfile, "wb") as f:
         f.write(r.content)
 
-    size_mb = os.path.getsize(outfile) / 1e6
-    print(f"Done! Saved {size_mb:.1f} MB to {outfile}")
+    print("Download complete.")
     return outfile
 
 
